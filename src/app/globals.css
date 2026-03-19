@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 195 60% 94%; /* Very Light Sky Blue */
+    --foreground: 210 20% 30%; /* Dark Slate Blue */
+    --card: 195 55% 96%; /* Lighter Sky Blue, almost white */
+    --card-foreground: 210 20% 30%;
+    --popover: 195 55% 96%;
+    --popover-foreground: 210 20% 30%;
+    --primary: 180 55% 55%; /* Medium Cyan/Teal */
+    --primary-foreground: 0 0% 100%; /* White */
+    --secondary: 190 40% 90%; /* Light Bluish Gray */
+    --secondary-foreground: 210 20% 30%;
+    --muted: 190 40% 85%; /* Muted Bluish Gray */
+    --muted-foreground: 210 15% 50%; /* Medium Slate Blue */
+    --accent: 35 85% 65%; /* Coral Orange */
+    --accent-foreground: 0 0% 100%; /* White */
+    --destructive: 0 70% 60%; 
+    --destructive-foreground: 0 0% 100%;
+    --border: 190 40% 80%; /* Light Grayish Blue Border */
+    --input: 190 40% 88%; /* Light Grayish Blue Input */
+    --ring: 180 55% 55%; /* Primary Cyan/Teal for Focus Ring */
+    --chart-1: 180 50% 50%; 
+    --chart-2: 35 75% 60%;
+    --chart-3: 180 40% 65%;
+    --chart-4: 35 65% 70%;
+    --chart-5: 180 60% 45%;
+    --radius: 0.5rem;
+
+    /* Sidebar specific colors - themed for consistency */
+    --sidebar-background: 195 50% 92%; 
+    --sidebar-foreground: 210 20% 30%;
+    --sidebar-primary: 180 55% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 35 85% 65%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 190 40% 78%;
+    --sidebar-ring: 180 55% 55%;
+  }
+
+  .dark {
+    --background: 210 40% 12%; /* Deep Ocean Blue */
+    --foreground: 190 30% 88%; /* Light Cyanish White */
+    --card: 210 35% 16%; /* Darker Ocean Blue */
+    --card-foreground: 190 30% 88%;
+    --popover: 210 35% 16%;
+    --popover-foreground: 190 30% 88%;
+    --primary: 175 60% 50%; /* Glowing Teal */
+    --primary-foreground: 0 0% 100%; 
+    --secondary: 200 30% 22%; /* Muted Dark Blue */
+    --secondary-foreground: 190 30% 88%;
+    --muted: 200 30% 25%; /* Slightly Lighter Muted Dark Blue */
+    --muted-foreground: 190 25% 70%; /* Medium Cyanish White */
+    --accent: 45 90% 60%; /* Bioluminescent Yellow/Gold */
+    --accent-foreground: 210 40% 12%; /* Dark, to contrast with bright accent */
+    --destructive: 0 60% 50%; 
+    --destructive-foreground: 0 0% 100%;
+    --border: 200 30% 28%; /* Dark Blue Border */
+    --input: 200 30% 22%; /* Muted Dark Blue Input */
+    --ring: 175 60% 50%; /* Primary Teal for Focus Ring */
+    --chart-1: 175 50% 45%;
+    --chart-2: 45 80% 55%;
+    --chart-3: 175 40% 60%;
+    --chart-4: 45 70% 65%;
+    --chart-5: 175 60% 40%;
+
+    /* Dark Sidebar specific colors */
+    --sidebar-background: 210 38% 10%;
+    --sidebar-foreground: 190 30% 85%;
+    --sidebar-primary: 175 60% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 45 90% 60%;
+    --sidebar-accent-foreground: 210 40% 12%;
+    --sidebar-border: 200 30% 20%;
+    --sidebar-ring: 175 60% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

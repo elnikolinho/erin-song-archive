@@ -1,4 +1,3 @@
-
 "use client";
 
 import type React from "react";
@@ -6,7 +5,17 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import type { Song } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, Volume2, VolumeX, SkipForward, SkipBack, ListMusic, Edit3, Loader2 } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  SkipForward,
+  SkipBack,
+  ListMusic,
+  Edit3,
+  Loader2,
+} from "lucide-react";
 import { formatTime } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -24,8 +33,16 @@ interface MusicPlayerProps {
   isLoading?: boolean; // For initial loading state
 }
 
-const MusicPlayer: React.FC<MusicPlayerProps> = ({ 
-  song, songs, onNextSong, onPrevSong, onLyricsUpdate, isPlaying, onPlayPause, currentSongIndex, isLoading
+const MusicPlayer: React.FC<MusicPlayerProps> = ({
+  song,
+  songs,
+  onNextSong,
+  onPrevSong,
+  onLyricsUpdate,
+  isPlaying,
+  onPlayPause,
+  currentSongIndex,
+  isLoading,
 }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -35,13 +52,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   const [showLyricsEditor, setShowLyricsEditor] = useState(false);
   const [isAudioLoading, setIsAudioLoading] = useState(false);
 
-
   const handlePlayPause = useCallback(() => {
     if (!audioRef.current || !song?.audioSrc) return; // Ensure audioSrc is present
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.play().catch(error => console.error("Error playing audio:", error));
+      audioRef.current
+        .play()
+        .catch((error) => console.error("Error playing audio:", error));
     }
     onPlayPause(!isPlaying);
   }, [isPlaying, onPlayPause, song?.audioSrc]);
@@ -49,11 +67,15 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
-      if (isPlaying && song?.audioSrc) { // Check song.audioSrc
-        audio.play().catch(error => {
-          console.error("Error playing audio in useEffect[isPlaying, song]:", error)
+      if (isPlaying && song?.audioSrc) {
+        // Check song.audioSrc
+        audio.play().catch((error) => {
+          console.error(
+            "Error playing audio in useEffect[isPlaying, song]:",
+            error,
+          );
           // Potentially set isPlaying to false if play fails
-          // onPlayPause(false); 
+          // onPlayPause(false);
         });
       } else {
         audio.pause();
@@ -61,11 +83,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     }
   }, [isPlaying, song]);
 
-
   useEffect(() => {
     const audio = audioRef.current;
-    if (audio && song?.audioSrc) { // Check song.audioSrc
-      if (audio.src !== song.audioSrc) { // Only change src if it's different
+    if (audio && song?.audioSrc) {
+      // Check song.audioSrc
+      if (audio.src !== song.audioSrc) {
+        // Only change src if it's different
         setIsAudioLoading(true);
         audio.src = song.audioSrc;
         audio.load(); // Explicitly load the new source
@@ -73,16 +96,19 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       audio.volume = isMuted ? 0 : volume;
       // audio.load(); // Moved to src change block
       if (isPlaying) {
-         audio.play().catch(e => console.error("Error playing on song change:", e));
+        audio
+          .play()
+          .catch((e) => console.error("Error playing on song change:", e));
       }
       setShowLyricsEditor(false);
-    } else if (audio) { // If no song or no audioSrc, reset
-        audio.src = "";
-        setDuration(0);
-        setCurrentTime(0);
-        setIsAudioLoading(false);
+    } else if (audio) {
+      // If no song or no audioSrc, reset
+      audio.src = "";
+      setDuration(0);
+      setCurrentTime(0);
+      setIsAudioLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [song?.id, song?.audioSrc, volume, isMuted]); // Depend on song.id and song.audioSrc
 
   useEffect(() => {
@@ -99,13 +125,16 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       setIsAudioLoading(false); // Audio metadata loaded
     };
     const handleEnded = () => {
-      onPlayPause(false); 
-      onNextSong(); 
+      onPlayPause(false);
+      onNextSong();
     };
     const handleCanPlay = () => {
       setIsAudioLoading(false);
-      if (isPlaying) { // Autoplay if it was supposed to be playing
-        audio.play().catch(e => console.error("Error auto-playing on canplay:", e));
+      if (isPlaying) {
+        // Autoplay if it was supposed to be playing
+        audio
+          .play()
+          .catch((e) => console.error("Error auto-playing on canplay:", e));
       }
     };
     const handleError = (e: Event) => {
@@ -113,7 +142,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       setIsAudioLoading(false);
       // Optionally show a toast or UI indication of audio error
     };
-    
+
     audio.addEventListener("timeupdate", updateTime);
     audio.addEventListener("loadedmetadata", updateDuration);
     audio.addEventListener("ended", handleEnded);
@@ -121,7 +150,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     audio.addEventListener("waiting", () => setIsAudioLoading(true));
     audio.addEventListener("playing", () => setIsAudioLoading(false));
     audio.addEventListener("error", handleError);
-
 
     return () => {
       audio.removeEventListener("timeupdate", updateTime);
@@ -133,7 +161,6 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       audio.removeEventListener("error", handleError);
     };
   }, [onNextSong, onPlayPause, isPlaying]);
-
 
   const handleSeek = (value: number[]) => {
     if (audioRef.current && song?.audioSrc) {
@@ -154,7 +181,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   const toggleMute = () => {
     if (audioRef.current) {
       if (isMuted) {
-        audioRef.current.volume = volume > 0 ? volume : 0.1; 
+        audioRef.current.volume = volume > 0 ? volume : 0.1;
         setIsMuted(false);
       } else {
         audioRef.current.volume = 0;
@@ -162,8 +189,9 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       }
     }
   };
-  
-  if (isLoading && !song) { // Show loader if overall page is loading and no song yet
+
+  if (isLoading && !song) {
+    // Show loader if overall page is loading and no song yet
     return (
       <Card className="w-full shadow-xl">
         <CardContent className="p-6 text-center text-muted-foreground flex flex-col items-center justify-center h-96">
@@ -179,7 +207,9 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       <Card className="w-full shadow-xl">
         <CardContent className="p-6 text-center text-muted-foreground flex flex-col items-center justify-center h-96">
           <ListMusic className="mx-auto h-12 w-12 mb-4 text-primary" />
-          <p>No song selected. Upload a song or choose from the cloud library.</p>
+          <p>
+            No song selected. Upload a song or choose from the cloud library.
+          </p>
         </CardContent>
       </Card>
     );
@@ -190,15 +220,23 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       <CardHeader className="bg-muted/30 p-4 border-b">
         <CardTitle className="font-headline text-2xl truncate text-primary">
           {song.name}
-          {song.year && <span className="text-lg text-muted-foreground ml-2">({song.year})</span>}
+          {song.year && (
+            <span className="text-lg text-muted-foreground ml-2">
+              ({song.year})
+            </span>
+          )}
         </CardTitle>
-        <p className="text-sm text-muted-foreground">Erins Song Archive - Music Player</p>
+        <p className="text-sm text-muted-foreground">
+          Erins Song Archive - Music Player
+        </p>
       </CardHeader>
       <CardContent className="p-4 md:p-6 space-y-6">
         <audio ref={audioRef} preload="metadata" />
 
         <div className="flex items-center justify-between">
-          <span className="text-sm font-mono text-muted-foreground min-w-[40px] text-center">{formatTime(currentTime)}</span>
+          <span className="text-sm font-mono text-muted-foreground min-w-[40px] text-center">
+            {formatTime(currentTime)}
+          </span>
           <Slider
             value={[currentTime]}
             max={duration || 0}
@@ -208,31 +246,61 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
             aria-label="Song progress"
             disabled={!song.audioSrc || isAudioLoading}
           />
-          <span className="text-sm font-mono text-muted-foreground min-w-[40px] text-center">{formatTime(duration || 0)}</span>
+          <span className="text-sm font-mono text-muted-foreground min-w-[40px] text-center">
+            {formatTime(duration || 0)}
+          </span>
         </div>
 
         <div className="flex items-center justify-center space-x-3">
-          <Button variant="ghost" size="icon" onClick={onPrevSong} disabled={songs.length < 2 || isAudioLoading} aria-label="Previous song">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onPrevSong}
+            disabled={songs.length < 2 || isAudioLoading}
+            aria-label="Previous song"
+          >
             <SkipBack className="h-6 w-6" />
           </Button>
-          <Button 
-            variant="default" 
-            size="lg" 
-            onClick={handlePlayPause} 
-            className="rounded-full w-16 h-16 shadow-lg" 
+          <Button
+            variant="default"
+            size="lg"
+            onClick={handlePlayPause}
+            className="rounded-full w-16 h-16 shadow-lg"
             aria-label={isPlaying ? "Pause" : "Play"}
             disabled={!song.audioSrc || isAudioLoading}
           >
-            {isAudioLoading ? <Loader2 className="h-8 w-8 animate-spin" /> : (isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />)}
+            {isAudioLoading ? (
+              <Loader2 className="h-8 w-8 animate-spin" />
+            ) : isPlaying ? (
+              <Pause className="h-8 w-8" />
+            ) : (
+              <Play className="h-8 w-8" />
+            )}
           </Button>
-          <Button variant="ghost" size="icon" onClick={onNextSong} disabled={songs.length < 2 || isAudioLoading} aria-label="Next song">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onNextSong}
+            disabled={songs.length < 2 || isAudioLoading}
+            aria-label="Next song"
+          >
             <SkipForward className="h-6 w-6" />
           </Button>
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" onClick={toggleMute} aria-label={isMuted ? "Unmute" : "Mute"} disabled={isAudioLoading}>
-            {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleMute}
+            aria-label={isMuted ? "Unmute" : "Mute"}
+            disabled={isAudioLoading}
+          >
+            {isMuted ? (
+              <VolumeX className="h-5 w-5" />
+            ) : (
+              <Volume2 className="h-5 w-5" />
+            )}
           </Button>
           <Slider
             value={[isMuted ? 0 : volume]}
@@ -244,29 +312,35 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
             disabled={isAudioLoading}
           />
         </div>
-        
+
         <div className="mt-4">
-            <Button onClick={() => setShowLyricsEditor(!showLyricsEditor)} variant="outline" className="w-full mb-4">
-                <Edit3 className="mr-2 h-4 w-4" /> {showLyricsEditor ? "Hide" : "Show"} Lyrics Editor
-            </Button>
-            {showLyricsEditor && (
-                <div className="p-4 border rounded-md bg-secondary/20">
-                    <LyricsInput song={song} onLyricsUpdate={onLyricsUpdate} />
-                </div>
-            )}
+          <Button
+            onClick={() => setShowLyricsEditor(!showLyricsEditor)}
+            variant="outline"
+            className="w-full mb-4"
+          >
+            <Edit3 className="mr-2 h-4 w-4" />{" "}
+            {showLyricsEditor ? "Hide" : "Show"} Lyrics Editor
+          </Button>
+          {showLyricsEditor && (
+            <div className="p-4 border rounded-md bg-secondary/20">
+              <LyricsInput song={song} onLyricsUpdate={onLyricsUpdate} />
+            </div>
+          )}
         </div>
 
-        {song.lyrics && song.lyrics.trim() !== '' && !showLyricsEditor && (
+        {song.lyrics && song.lyrics.trim() !== "" && !showLyricsEditor && (
           <ScrollArea className="h-48 md:h-64 p-4 rounded-lg border bg-background shadow-inner">
             <div className="whitespace-pre-wrap text-foreground/80 text-lg leading-relaxed">
               {song.lyrics}
             </div>
           </ScrollArea>
         )}
-        {(!song.lyrics || song.lyrics.trim() === '') && !showLyricsEditor && (
-            <p className="text-center text-muted-foreground py-8">No lyrics available for this song. Add them in the editor!</p>
+        {(!song.lyrics || song.lyrics.trim() === "") && !showLyricsEditor && (
+          <p className="text-center text-muted-foreground py-8">
+            No lyrics available for this song. Add them in the editor!
+          </p>
         )}
-
       </CardContent>
     </Card>
   );
